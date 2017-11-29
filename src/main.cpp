@@ -28,13 +28,19 @@ std::string hasData(std::string s) {
   return "";
 }
 
+// Resetting the Simulator
+void reset_simulator(uWS::WebSocket<uWS::SERVER>& ws){
+  std::string msg("42[\"reset\",{}]");
+  ws.send(msg.data(),msg.length(), uWS::OpCode::TEXT);
+}
+
 int main()
 {
   uWS::Hub h;
 
   PID pid;
   // TODO: Initialize the pid variable.
-  pid.Init(0.134611, 0.000270736, 3.05349);
+  pid.Init(0.161051, 0.000449439, 2.85538);
 
   h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
@@ -58,18 +64,24 @@ int main()
           * NOTE: Feel free to play around with the throttle and speed. Maybe use
           * another PID controller to control the speed!
           */
+
+          // when twiddle read certain steps restart the simulator
+          // if ((pid.ReachMaxSteps() == true) || (std::fabs(cte) >= 2.2)){
+          //   reset_simulator(ws);
+          // }
+
           pid.UpdateError(cte);
           steer_value = -pid.p_error * pid.Kp - pid.d_error * pid.Kd - pid.i_error * pid.Ki;
           speed = 50;
 
           // DEBUG
-          std::cout << "CTE: " << cte << " Steering Value: " << steer_value << std::endl;
+          // std::cout << "CTE: " << cte << " Steering Value: " << steer_value << std::endl;
 
           json msgJson;
           msgJson["steering_angle"] = steer_value;
           msgJson["throttle"] = 0.3;
           auto msg = "42[\"steer\"," + msgJson.dump() + "]";
-          std::cout << msg << std::endl;
+          // std::cout << msg << std::endl;
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
         }
       } else {

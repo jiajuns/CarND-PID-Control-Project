@@ -1,3 +1,6 @@
+#include <iostream>
+#include <vector>
+
 #ifndef PID_H
 #define PID_H
 
@@ -12,10 +15,17 @@ public:
 
   /*
   * Coefficients
-  */ 
+  */
   double Kp;
   double Ki;
   double Kd;
+
+  std::vector<double> dp;
+  int step, param_index;
+  // number of steps to allow changes to settle, then to evaluate error
+  int n_settle_steps, n_eval_steps;
+  double total_error, best_error;
+  bool tried_adding, tried_subtracting, use_twiddle;
 
   /*
   * Constructor
@@ -41,6 +51,10 @@ public:
   * Calculate the total PID error.
   */
   double TotalError();
+
+  void AddToParameterAtIndex(int index, double amount);
+
+  bool ReachMaxSteps();
 };
 
 #endif /* PID_H */
