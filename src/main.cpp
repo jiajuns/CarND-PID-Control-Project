@@ -65,6 +65,7 @@ int main()
           * another PID controller to control the speed!
           */
 
+          // commented out when not using twiddle
           // when twiddle read certain steps restart the simulator
           // if ((pid.ReachMaxSteps() == true) || (std::fabs(cte) >= 2.2)){
           //   reset_simulator(ws);
@@ -73,9 +74,6 @@ int main()
           pid.UpdateError(cte);
           steer_value = -pid.p_error * pid.Kp - pid.d_error * pid.Kd - pid.i_error * pid.Ki;
           speed = 50;
-
-          // DEBUG
-          // std::cout << "CTE: " << cte << " Steering Value: " << steer_value << std::endl;
 
           json msgJson;
           msgJson["steering_angle"] = steer_value;
