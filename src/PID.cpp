@@ -23,12 +23,15 @@ void PID::Init(double Kp, double Ki, double Kd) {
 
     use_twiddle = false;
     dp = {1, 1, 1};
+
     step = 0;
     param_index = 2;
-    settle_steps = 200;
-    eval_steps = 2000;
+    settle_steps = 250;
+    eval_steps = 2500;
+
     total_error = 0;
-    best_error = std::numeric_limits<double>::max();
+    best_error = 9999999;
+
     tried_adding = false;
     tried_subtracting = false;
 }

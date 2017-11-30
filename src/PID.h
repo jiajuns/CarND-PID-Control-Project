@@ -21,11 +21,19 @@ public:
   double Kd;
 
   std::vector<double> dp;
-  int step, param_index;
-  // number of steps to allow changes to settle, then to evaluate error
-  int settle_steps, eval_steps;
-  double total_error, best_error;
-  bool tried_adding, tried_subtracting, use_twiddle;
+  int step;
+  int param_index;
+
+  //steps to allow changes to reach steady
+  int settle_steps;
+  int eval_steps;
+
+  double total_error;
+  double best_error;
+
+  bool tried_adding;
+  bool tried_subtracting;
+  bool use_twiddle;
 
   /*
   * Constructor
