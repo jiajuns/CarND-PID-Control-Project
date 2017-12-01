@@ -55,12 +55,7 @@ public:
   */
   void UpdateError(double cte);
 
-  /*
-  * Calculate the total PID error.
-  */
-  double TotalError();
-
-  void AddToParameterAtIndex(int index, double amount);
+  void ModifyParameter(int index, double amount);
 
   bool ReachMaxSteps();
 };

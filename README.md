@@ -14,7 +14,7 @@ D components counteracts the P component's tendency to overshoot the center line
 
 * Describe how the final hyperparameters were chosen.
 
-I choose the parameter first by manually tuning to get the magnitude right and then I implement twiddle to fine tune my parameter.
+I choose the parameter first by manually tuning to get the magnitude right. If I feel the car is turning too slow I will increase the P parameter. If I feel the vehicle overshoot too much I will turn up the D components. After I finish manually turning I implement twiddle to fine tune my parameter. As you can seen in my code implementation, you can turn on and off the twiddle.
 
 
 ## Dependencies

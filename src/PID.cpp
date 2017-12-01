@@ -22,15 +22,15 @@ void PID::Init(double Kp, double Ki, double Kd) {
     d_error = 0;
 
     use_twiddle = false;
-    dp = {1, 1, 1};
+    dp = {0.1*Kp, 0.1*Kd, 0.1*Ki};
 
     step = 0;
-    param_index = 2;
-    settle_steps = 250;
-    eval_steps = 2500;
+    param_index = 0;
+    settle_steps = 100;
+    eval_steps = 500;
 
-    total_error = 0;
-    best_error = 9999999;
+    total_error = 0.0;
+    best_error = numeric_limits<double>::max();
 
     tried_adding = false;
     tried_subtracting = false;
@@ -50,26 +50,26 @@ void PID::UpdateError(double cte) {
         cout << "total error: " << total_error << endl;
         cout << "best error: " << best_error << endl;
         if (total_error < best_error) {
-            cout << "improvement!" << endl;
+            cout << "improved" << endl;
             best_error = total_error;
-            if (step !=  eval_steps) {
-                dp[param_index] *= 1.1;
-            }
+            dp[param_index] *= 1.1;
             param_index = (param_index + 1) % 3;
             tried_adding = false;
             tried_subtracting = false;
         }
-
+        // when found a better solution
         if (!tried_adding && !tried_subtracting) {
-            AddToParameterAtIndex(param_index, dp[param_index]);
+            ModifyParameter(param_index, dp[param_index]);
             tried_adding = true;
         }
+        // when added but solution isnt good
         else if (tried_adding && !tried_subtracting) {
-            AddToParameterAtIndex(param_index, -2 * dp[param_index]);
+            ModifyParameter(param_index, -2 * dp[param_index]);
             tried_subtracting = true;
         }
+        // when after finished adding and substracting but solution isnt as good
         else {
-            AddToParameterAtIndex(param_index, dp[param_index]);
+            ModifyParameter(param_index, dp[param_index]);
             dp[param_index] *= 0.9;
             param_index = (param_index + 1) % 3;
             tried_adding = false;
@@ -81,10 +81,6 @@ void PID::UpdateError(double cte) {
         total_error = 0;
     }
     step++;
-}
-
-double PID::TotalError() {
-    return 0.0;
 }
 
 bool PID::ReachMaxSteps(){
@@ -99,14 +95,17 @@ bool PID::ReachMaxSteps(){
     }
 }
 
-void PID::AddToParameterAtIndex(int index, double amount) {
-    if (index == 0) {
+void PID::ModifyParameter(int index, double amount) {
+    switch (index)
+    {
+    case 0:
         Kp += amount;
-    }
-    else if (index == 1) {
+        break;
+    case 1:
         Kd += amount;
-    }
-    else if (index == 2) {
+        break;
+    case 2:
         Ki += amount;
+        break;
     }
 }
