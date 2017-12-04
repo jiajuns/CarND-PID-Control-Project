@@ -30,7 +30,8 @@ void PID::Init(double Kp, double Ki, double Kd) {
     eval_steps = 500;
 
     total_error = 0.0;
-    best_error = numeric_limits<double>::max();
+    // best_error = numeric_limits<double>::max();
+    best_error = 99999.9;
 
     tried_adding = false;
     tried_subtracting = false;
